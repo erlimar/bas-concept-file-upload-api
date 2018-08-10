@@ -23,22 +23,23 @@ if (!fs.existsSync(fileBagInfoPath)) {
 
 app.use(fileUpload());
 
-// app.get('/', (req, res) => {
-//     res.send(`
-// <html>
-//   <body>
-//     <form ref="uploadForm"
-//       id="uploadForm"
-//       action="/upload"
-//       method="post"
-//       encType="multipart/form-data">
-//         <input multiple type="file" name="sampleFile" />
-//         <input type="submit" value="Upload!" />
-//     </form>
-//   </body>
-// </html>
-// `);
-// });
+app.get('/', (req, res) => {
+    res.send(`
+<html>
+  <body>
+    <h1>Envie seus arquivos para teste!</h1>
+    <form ref="uploadForm"
+      id="uploadForm"
+      action="/upload"
+      method="post"
+      encType="multipart/form-data">
+        <input multiple type="file" name="sampleFile" />
+        <input type="submit" value="Upload!" />
+    </form>
+  </body>
+</html>
+`);
+});
 
 app.post('/upload', function (req, res) {
     if (!req.files)

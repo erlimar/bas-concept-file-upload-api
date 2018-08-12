@@ -1,19 +1,24 @@
 {
   "name": "bas-concept-file-upload-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "Prova de conceito BAS - API para upload de arquivos",
   "main": "index.js",
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "bas",
+    "concept",
+    "file",
+    "upload"
+  ],
+  "author": "Erlimar Silva Campos",
   "license": "Apache-2.0",
+  "engines": {
+    "node": "9.6.0"
+  },
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
     "express": "^4.16.3",
     "express-fileupload": "^0.4.0"
-  },
-  "devDependencies": {
-    "openode": "^1.5.4"
   }
 }

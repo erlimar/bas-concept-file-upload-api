@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const utils = require('./utils');
-const APP_PORT = 3000;
+const APP_PORT = process.env.PORT || 3000;
 const app = express();
 const fileUpload = require('express-fileupload');
 const fileBagPath = path.resolve(__dirname, 'files');
@@ -27,14 +27,31 @@ app.get('/', (req, res) => {
     res.send(`
 <html>
   <body>
-    <h1>Envie seus arquivos para teste!</h1>
-    <form ref="uploadForm"
-      id="uploadForm"
+    <h1>Prova de conceito BAS</h1>
+    <h2>API para upload de arquivos</h2>
+    <h3>Página inicial</h3>
+
+    <ul>
+      <li><a href="/test">Página para testes</a></li>
+    </ul>
+  </body>
+</html>
+    `);
+});
+
+app.get('/test', (req, res) => {
+    res.send(`
+<html>
+  <body>
+    <h1>Prova de conceito BAS</h1>
+    <h2>API para upload de arquivos</h2>
+    <p>Página de testes | <a href="/">voltar para página inicial</a></p>
+    <form
       action="/upload"
       method="post"
       encType="multipart/form-data">
-        <input multiple type="file" name="sampleFile" />
-        <input type="submit" value="Upload!" />
+        <input multiple type="file" name="files" />
+        <input type="submit" value="Enviar!" />
     </form>
   </body>
 </html>

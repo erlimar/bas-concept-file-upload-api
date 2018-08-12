@@ -5,24 +5,31 @@ const utils = require('./utils');
 const APP_PORT = process.env.PORT || 3000;
 const app = express();
 const fileUpload = require('express-fileupload');
-const fileBagPath = path.resolve(__dirname, 'files');
-const fileBagDataPath = path.resolve(fileBagPath, 'data');
-const fileBagInfoPath = path.resolve(fileBagPath, 'info');
+const bagInfo = utils.getFileBagInfo();
 
-if (!fs.existsSync(fileBagPath)) {
-    fs.mkdirSync(fileBagPath);
+// --------------------------------------------------------
+// Inicializa os diretórios locais para guardar os arquivos
+// --------------------------------------------------------
+if (!fs.existsSync(bagInfo.rootPath)) {
+    fs.mkdirSync(bagInfo.rootPath);
 }
 
-if (!fs.existsSync(fileBagDataPath)) {
-    fs.mkdirSync(fileBagDataPath);
+if (!fs.existsSync(bagInfo.dataPath)) {
+    fs.mkdirSync(bagInfo.dataPath);
 }
 
-if (!fs.existsSync(fileBagInfoPath)) {
-    fs.mkdirSync(fileBagInfoPath);
+if (!fs.existsSync(bagInfo.infoPath)) {
+    fs.mkdirSync(bagInfo.infoPath);
 }
 
+// --------------------------------------------------------
+// Inicializa o componente FileUpload para Express()
+// --------------------------------------------------------
 app.use(fileUpload());
 
+// --------------------------------------------------------
+// Página inicial
+// --------------------------------------------------------
 app.get('/', (req, res) => {
     res.send(`
 <html>
@@ -39,6 +46,9 @@ app.get('/', (req, res) => {
     `);
 });
 
+// --------------------------------------------------------
+// Página para testes
+// --------------------------------------------------------
 app.get('/test', (req, res) => {
     res.send(`
 <html>
@@ -58,23 +68,25 @@ app.get('/test', (req, res) => {
 `);
 });
 
+// --------------------------------------------------------
+// API: POST "/upload" - Faz upload de arquivos
+// --------------------------------------------------------
 app.post('/upload', function (req, res) {
     if (!req.files)
         return res.status(400).send('Nenhum arquivo enviado');
 
     let result = [];
 
-    for(let fieldName in req.files){
+    for (let fieldName in req.files) {
         let file = req.files[fieldName],
             fileList = Array.isArray(file)
                 ? file : [file];
 
-        for(let fileIndex in fileList){
+        for (let fileIndex in fileList) {
             let fileObject = fileList[fileIndex];
             let fileInfo = utils.createFileInfo(fileObject);
-            let infoPath = path.resolve(fileBagInfoPath, fileInfo.id);
-            let dataPath = path.resolve(fileBagDataPath, fileInfo.dataHash);
-
+            let infoPath = path.resolve(bagInfo.infoPath, fileInfo.id);
+            let dataPath = path.resolve(bagInfo.dataPath, fileInfo.dataHash);
 
             fs.writeFileSync(infoPath, JSON.stringify(fileInfo, null, 4));
 
@@ -95,6 +107,35 @@ app.post('/upload', function (req, res) {
     res.send(result);
 });
 
+// --------------------------------------------------------
+// Lista todos os arquivos disponíveis
+// --------------------------------------------------------
+app.get('/files', (req, res) => {
+    res.send(utils.getAllFilesInfo());
+});
+
+// --------------------------------------------------------
+// Retorna as informações de um único arquivo
+// --------------------------------------------------------
+app.get('/file/:id', (req, res) => {
+    res.send(utils.getFileInfo(req.params.id));
+});
+
+// --------------------------------------------------------
+// Faz o download de uma arquivo
+// --------------------------------------------------------
+app.get('/download/:id', (req, res) => {
+    let fileInfo = utils.getFileInfo(req.params.id);
+    let fileDataPath = path.resolve(bagInfo.dataPath, fileInfo.dataHash);
+
+    res.set('Content-Disposition', `attachment;filename=${fileInfo.name}`);
+    res.set('Content-Type', fileInfo.mimetype);
+    res.sendFile(fileDataPath);
+});
+
+// --------------------------------------------------------
+// Inicializa aplicativo
+// --------------------------------------------------------
 app.listen(APP_PORT, function () {
     console.log(`Listening on port ${APP_PORT}...`);
 })

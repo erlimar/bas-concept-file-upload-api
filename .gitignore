@@ -63,4 +63,4 @@ typings/
 files/
 .idea/
 package-lock.json
-.openode
+.vscode

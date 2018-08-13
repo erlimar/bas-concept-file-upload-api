@@ -104,6 +104,9 @@ app.post('/upload', function (req, res) {
         }
     }
 
+    if (!result.length)
+        return res.status(400).send('Nenhum arquivo enviado');
+
     res.send(result);
 });
 
@@ -111,14 +114,31 @@ app.post('/upload', function (req, res) {
 // Lista todos os arquivos disponíveis
 // --------------------------------------------------------
 app.get('/files', (req, res) => {
-    res.send(utils.getAllFilesInfo());
+    let files = utils.getAllFilesInfo().map(file => {
+        return {
+            name: file.name,
+            mimetype: file.mimetype,
+            id: file.id
+        }
+    });
+
+    res.send(files);
 });
 
 // --------------------------------------------------------
 // Retorna as informações de um único arquivo
 // --------------------------------------------------------
 app.get('/file/:id', (req, res) => {
-    res.send(utils.getFileInfo(req.params.id));
+    let file = utils.getFileInfo(req.params.id);
+
+    if (!file)
+        return res.status(404).send('Arquivo não encontrado!');
+
+    res.send({
+        name: file.name,
+        mimetype: file.mimetype,
+        id: file.id
+    });
 });
 
 // --------------------------------------------------------
@@ -126,6 +146,10 @@ app.get('/file/:id', (req, res) => {
 // --------------------------------------------------------
 app.get('/download/:id', (req, res) => {
     let fileInfo = utils.getFileInfo(req.params.id);
+
+    if (!fileInfo)
+        return res.status(404).send('Arquivo não encontrado!');
+
     let fileDataPath = path.resolve(bagInfo.dataPath, fileInfo.dataHash);
 
     res.set('Content-Disposition', `attachment;filename=${fileInfo.name}`);

@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const utils = require('./utils');
+const cors = require('./cors-middleware');
 const APP_PORT = process.env.PORT || 3000;
 const app = express();
 const fileUpload = require('express-fileupload');
@@ -21,6 +22,11 @@ if (!fs.existsSync(bagInfo.dataPath)) {
 if (!fs.existsSync(bagInfo.infoPath)) {
     fs.mkdirSync(bagInfo.infoPath);
 }
+
+// --------------------------------------------------------
+// Inicializa o middleware CORS
+// --------------------------------------------------------
+app.use(cors());
 
 // --------------------------------------------------------
 // Inicializa o componente FileUpload para Express()

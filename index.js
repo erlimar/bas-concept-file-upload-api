@@ -104,8 +104,8 @@ app.post('/upload', function (req, res) {
             }
 
             result.push({
-                fileName: fileInfo.name,
-                fileId: fileInfo.id
+                name: fileInfo.name,
+                id: fileInfo.id
             });
         }
     }

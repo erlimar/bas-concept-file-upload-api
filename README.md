@@ -11,10 +11,11 @@ Prova de conceito para API de upload de arquivos para BAS
 
 ## Cliente
 
-A parte do lado do cliente dessa prova de conceito pode ser encontrada em https://github.com/erlimar/bas-concept-file-upload-webclient
+## Web
+Um cliente web dessa prova de conceito pode ser encontrada em https://github.com/erlimar/bas-concept-file-upload-webclient
 
-## Demonstração
-
+### Demonstração
 Você pode ver uma demonstração online em https://unpkg.com/bas-concept-file-upload-webclient/index.html
 
-## 
+## Win32
+Um cliente Win32 dessa prova de conceito pode ser encontrada em https://github.com/erlimar/BAS.Concept.File.Upload.WinManager
